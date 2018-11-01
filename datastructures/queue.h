@@ -16,13 +16,12 @@
 
 typedef struct _queue
 {
-    long player_score;
-    long player_id;
+    void *p_node;
     struct _queue *next;
 } queue;
 
-void enqueue(long player_id, long player_score);
-void dequeue(long *p_player_id, long *p_player_score);
+void enqueue(void *p_node);
+void dequeue(long **pp_node);
 long count_queue_size();
 void print_queue();
 void revise_queue();

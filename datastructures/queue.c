@@ -9,13 +9,12 @@ static queue *tail = NULL;
 static long count = 0;
 extern int max_length;
 
-void enqueue(long player_id, long player_score)
+void enqueue(void *p_node)
 {
     queue *ptr = NULL;
 
     ptr = (queue *) calloc(1,sizeof(queue));
-    ptr->player_id = player_id;
-    ptr->player_score = player_score;
+    ptr->p_node = p_node;
     ptr->next = NULL;
 
     if(tail == NULL)
@@ -27,7 +26,6 @@ void enqueue(long player_id, long player_score)
         {
             head = tail;
         }
-        //printf("Adding player id =%ld for the first time, count=%ld \n",player_id, count);
     }
     else
     {
@@ -36,20 +34,18 @@ void enqueue(long player_id, long player_score)
     }
 }
 
-void dequeue(long *p_player_id, long *p_player_score)
+void dequeue(long **pp_node)
 {
     queue *node = head;
 
-    if(!node || !p_player_id || !p_player_score)
+    if(!node || !pp_node)
     {
         return;
     }
 
     head = node->next;
 
-    *p_player_id = node->player_id;
-
-    *p_player_score = node->player_score;
+    *pp_node = node->p_node;
 
     free(node);
 }
@@ -75,7 +71,7 @@ void print_queue()
 
     while(node)
     {
-        printf("Node at index =%ld has player id =%ld,score=%ld\n",count,node->player_id,node->player_score);
+        printf("Node at index =%ld has p_node =%p\n",count,node->p_node);
         node = node->next;
         count++;
     }
@@ -83,17 +79,28 @@ void print_queue()
 
 void revise_queue() {
     long player_id = 0, player_score = 100;
+    struct player_details {
+        long player_id;
+        long player_score;
+    };
+    printf("************Queue************************\n");
     for(player_id=0; player_id < max_length; player_id++) {
-        enqueue(player_id,player_score++);
+        struct player_details *p_player_details = (struct player_details *) calloc(1,sizeof(struct player_details));
+        p_player_details->player_id = player_id;
+        p_player_details->player_score = player_score++;
+        enqueue(p_player_details);
     }
     printf("queue size = %d.\n",count_queue_size());
     printf("print_queue:\n");
     print_queue();
     for(player_id=0; player_id < max_length; player_id++) {
-        long player_id = 0;
-        long player_score = 0;
-        dequeue(&player_id,&player_score);
-        printf("player_id=%d and player_score=%d.\n",player_id,player_score);
+        struct player_details *p_player_details = NULL;
+        dequeue(&p_player_details);
+        if (p_player_details != NULL) {
+            printf("player_id=%ld and player_score=%ld.\n",p_player_details->player_id,
+                   p_player_details->player_score);
+            free(p_player_details);
+        }
     }
     printf("queue size = %d.\n",count_queue_size());
 }

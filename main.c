@@ -14,5 +14,6 @@ int main() {
     revise_pointers();
     revise_arrays();
     revise_queue();
+    linked_list_revise();
     return 0;
 }

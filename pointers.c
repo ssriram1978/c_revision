@@ -25,6 +25,7 @@ void pass_by_reference(char **ptr) {
 void revise_pointers() {
     char *ptr = NULL, *ptr1 = NULL, *ptr2 = NULL;
     char i=10;
+    printf("************Pointers************************\n");
     printf("ptr = %p.\n",ptr);
     printf("&ptr = %p.\n",&ptr);
     ptr = wrong_way(ptr1);

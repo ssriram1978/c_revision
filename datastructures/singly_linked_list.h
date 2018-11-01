@@ -16,16 +16,15 @@
 
 typedef struct _single_linked_list
 {
-    long player_score;
-    long player_id;
+    void *p_value;
     struct _single_linked_list *next;
 } single_linked_list;
 
-void add_node_to_linked_list(long player_id, long player_score);
-void delete_node_from_linked_list(long player_id);
+void add_node_to_linked_list(void *p_node);
+void delete_node_from_linked_list(void *p_node);
 long count_total_nodes_in_linked_list();
-single_linked_list *return_nodes_belonging_to_this_percentile(unsigned char percentile);
 void print_nodes_in_linked_list();
 void reverse_linked_list();
+void linked_list_revise();
 
 #endif //C_REVISION_SINGLY_LINKED_LIST_H
