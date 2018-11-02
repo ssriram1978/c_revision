@@ -4,12 +4,25 @@
 
 #include "singly_linked_list.h"
 
+
+typedef struct _single_linked_list
+{
+    void *p_value;
+    struct _single_linked_list *next;
+} single_linked_list;
+
 static single_linked_list *head = NULL;
 static single_linked_list *tail = NULL;
-long count = 0;
+static long count = 0;
 extern long max_length;
 
-void add_node_to_linked_list(void *p_node)
+static void add_node_to_linked_list(void *p_node);
+static void delete_node_from_linked_list(void *p_node);
+static long count_total_nodes_in_linked_list();
+static void print_nodes_in_linked_list();
+static void reverse_linked_list();
+
+static void add_node_to_linked_list(void *p_node)
 {
     single_linked_list *ptr = NULL;
 
@@ -31,7 +44,7 @@ void add_node_to_linked_list(void *p_node)
     }
 }
 
-void reverse_linked_list()
+static void reverse_linked_list()
 {
     single_linked_list *currNode = head, *prevNode = NULL, *nextNode = NULL;
 
@@ -54,7 +67,7 @@ void reverse_linked_list()
     }
 }
 
-void delete_node_from_linked_list(void *p_node)
+static void delete_node_from_linked_list(void *p_node)
 {
     single_linked_list *node = head;
     single_linked_list *prev = head;
@@ -87,9 +100,10 @@ void delete_node_from_linked_list(void *p_node)
     }
     printf("Deleting Node that has p_value =%p\n",node->p_value);
     free(node);
+    count--;
 }
 
-long count_total_nodes_in_linked_list()
+static long count_total_nodes_in_linked_list()
 {
     long count = 0;
     single_linked_list *node = head;
@@ -103,7 +117,7 @@ long count_total_nodes_in_linked_list()
     return count;
 }
 
-void print_nodes_in_linked_list()
+static void print_nodes_in_linked_list()
 {
     long count = 0;
     single_linked_list *node = head;
@@ -116,12 +130,12 @@ void print_nodes_in_linked_list()
     }
 }
 
-void linked_list_revise()
+void singly_linked_list_revise()
 {
     int index = 0;
 
     int *p_array = (int *) calloc(max_length,sizeof(int));
-    printf("************Linked List************************\n");
+    printf("************ Singly Linked List************************\n");
     for(index=0; index < max_length; index++)
     {
         p_array[index]=index;
@@ -130,7 +144,7 @@ void linked_list_revise()
 
     print_nodes_in_linked_list();
 
-    printf("Total number of nodes = %d.\n",count_total_nodes_in_linked_list());
+    printf("Total number of nodes = %ld.\n",count_total_nodes_in_linked_list());
 
     for(index=0; index < max_length; index++)
     {
@@ -139,7 +153,7 @@ void linked_list_revise()
 
     print_nodes_in_linked_list();
 
-    printf("Total number of nodes = %d.\n",count_total_nodes_in_linked_list());
+    printf("Total number of nodes = %ld.\n",count_total_nodes_in_linked_list());
 
     for(index=0; index < max_length; index++)
     {
@@ -149,13 +163,15 @@ void linked_list_revise()
 
     print_nodes_in_linked_list();
 
-    printf("Total number of nodes = %d.\n",count_total_nodes_in_linked_list());
+    printf("Total number of nodes = %ld.\n",count_total_nodes_in_linked_list());
 
     reverse_linked_list();
 
+    printf("After reversing...\n");
+
     print_nodes_in_linked_list();
 
-    printf("Total number of nodes = %d.\n",count_total_nodes_in_linked_list());
+    printf("Total number of nodes = %ld.\n",count_total_nodes_in_linked_list());
 
     free(p_array);
 

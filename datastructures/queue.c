@@ -4,12 +4,24 @@
 
 #include "queue.h"
 
+
+typedef struct _queue
+{
+    void *p_node;
+    struct _queue *next;
+} queue;
+
+static void enqueue(void *p_node);
+static void dequeue(long **pp_node);
+static long count_queue_size();
+static void print_queue();
+
 static queue *head = NULL;
 static queue *tail = NULL;
 static long count = 0;
 extern int max_length;
 
-void enqueue(void *p_node)
+static void enqueue(void *p_node)
 {
     queue *ptr = NULL;
 
@@ -34,7 +46,7 @@ void enqueue(void *p_node)
     }
 }
 
-void dequeue(long **pp_node)
+static void dequeue(long **pp_node)
 {
     queue *node = head;
 
@@ -50,7 +62,7 @@ void dequeue(long **pp_node)
     free(node);
 }
 
-long count_queue_size()
+static long count_queue_size()
 {
     long count = 0;
     queue *node = head;
@@ -64,7 +76,7 @@ long count_queue_size()
     return count;
 }
 
-void print_queue()
+static void print_queue()
 {
     long count = 0;
     queue *node = head;

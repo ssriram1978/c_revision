@@ -22,6 +22,29 @@ void pass_by_reference(char **ptr) {
     memcpy((void *)*ptr,(void *)"hello world",strlen("hello world"));
 }
 
+void const_pointers_example() {
+    char array[] = "Hello";
+    const char *ptr = array; //value pointed by ptr cannot be changed but the pointer can be changed.
+    unsigned char * const ptr2 = (unsigned char *) calloc(10,sizeof(char));
+    //in this char * const ptr2; is a constant pointer to a character array.
+    // characters can be changed but the pointer cannot be changed.
+
+    printf("****** const char * pointer example ****\n");
+    printf("const ptr = %s.\n",ptr);
+    //*(ptr+2) = 'b'; //error: assignment of read-only location ‘*(ptr + 2)’
+    array[2] = 'b';
+    printf("const ptr = %s.\n",ptr);
+
+    printf("****** char * const pointer example ****\n");
+    memcpy(ptr2,"world",sizeof("world"));
+    printf("ptr2=%s.\n",ptr2);
+    memcpy(ptr2,"universe",sizeof("universe"));
+    printf("ptr2=%s.\n",ptr2);
+    //ptr2 = "123"; //error: assignment of read-only variable ‘ptr2’
+    free(ptr2);
+
+}
+
 void revise_pointers() {
     char *ptr = NULL, *ptr1 = NULL, *ptr2 = NULL;
     char i=10;
@@ -40,4 +63,6 @@ void revise_pointers() {
     printf("i = %d.\n",i);
     free(ptr2);
     free(ptr1);
+    const_pointers_example();
+
 }
