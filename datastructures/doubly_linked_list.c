@@ -4,55 +4,87 @@
 
 #include "doubly_linked_list.h"
 
-typedef struct _doubly_linked_list
+typedef struct _node_t
 {
     void *p_value;
-    struct _doubly_linked_list *prev;
-    struct _doubly_linked_list *next;
-} doubly_linked_list;
+    struct _node_t *prev;
+    struct _node_t *next;
+} node_t;
 
-static doubly_linked_list *head = NULL;
-static doubly_linked_list *tail = NULL;
-static long count = 0;
+typedef struct _doubly_linked_list_t {
+    node_t *head;
+    node_t *tail;
+    long count;
+} doubly_linked_list_t;
+
 extern long max_length;
 
-static void add_node_to_linked_list(void *p_node);
-static void delete_node_from_linked_list(void *p_node);
-static long count_total_nodes_in_linked_list();
-static void print_nodes_in_linked_list();
-static void reverse_linked_list();
-
-static void add_node_to_linked_list(void *p_node)
+static void add_node_to_linked_list(doubly_linked_list_t *p_list,void *p_node);
+static void delete_node_from_linked_list(doubly_linked_list_t *p_list,void *p_node);
+static long count_total_nodes_in_linked_list(doubly_linked_list_t *p_list);
+static void print_nodes_in_linked_list(doubly_linked_list_t *p_list);
+static void reverse_linked_list(doubly_linked_list_t *p_list);
+static void free_linked_list(doubly_linked_list_t *p_list);
+static void add_node_to_linked_list(doubly_linked_list_t *p_list,void *p_node)
 {
-    doubly_linked_list *ptr = NULL;
+    node_t *ptr = NULL;
 
-    ptr = (doubly_linked_list *) calloc(1,sizeof(doubly_linked_list));
+    if (!p_list || !p_node) {
+        printf("Invalid input parameters.\n");
+        return;
+    }
+
+    ptr = (node_t *) calloc(1,sizeof(node_t));
     ptr->p_value = p_node;
 
-    if(head == NULL)
+    if(p_list->head == NULL)
     {
-        head = ptr;
+        p_list->head = ptr;
         ptr->next = NULL;
         ptr->prev = NULL;
-        tail = head;
-        count++;
+        p_list->tail = p_list->head;
+        p_list->count++;
     }
     else
     {
         //add it to the tail
-        tail->next = ptr;
-        ptr->prev = tail;
-        tail = ptr;
+        p_list->tail->next = ptr;
+        ptr->prev = p_list->tail;
+        p_list->tail = ptr;
     }
 }
 
-static void reverse_linked_list()
+static void free_linked_list(doubly_linked_list_t *p_list)
 {
-    doubly_linked_list *currNode = head, *prevNode = NULL, *nextNode = NULL;
-    tail = currNode;
+    node_t *p_node = NULL, *next = NULL;
+
+    if (!p_list || !p_list->head) {
+        printf("Invalid input parameters.\n");
+        return;
+    }
+
+    p_node = p_list->head;
+    next = p_list->head;
+    while(p_node) {
+        next = p_node->next;
+        free(p_node);
+        p_node = next;
+    }
+}
+
+static void reverse_linked_list(doubly_linked_list_t *p_list)
+{
+    node_t *currNode = NULL, *prevNode = NULL, *nextNode = NULL;
+
+    if (!p_list) {
+        printf("Invalid input parameters.\n");
+        return;
+    }
+    currNode = p_list->head;
+    p_list->tail = currNode;
     while (currNode) {
         if (currNode->next == NULL) {
-            head = currNode;
+            p_list->head = currNode;
         }
         nextNode = currNode->next;
         currNode->next = prevNode;
@@ -62,9 +94,15 @@ static void reverse_linked_list()
     }
 }
 
-static void delete_node_from_linked_list(void *p_node)
+static void delete_node_from_linked_list(doubly_linked_list_t *p_list,void *p_node)
 {
-    doubly_linked_list *node = head;
+    node_t *node = NULL;
+
+    if (!p_list || !p_node) {
+        printf("Invalid input parameters.\n");
+        return;
+    }
+    node = p_list->head;
 
     while(node && node->p_value != p_node)
     {
@@ -78,16 +116,16 @@ static void delete_node_from_linked_list(void *p_node)
     }
 
     //Adjust head and tail.
-    if(head == node) {
+    if(p_list->head == node) {
         if (node->next) {
             node->next->prev = NULL;
         }
-        head = node->next;
-    } else if(tail == node) {
+        p_list->head = node->next;
+    } else if(p_list->tail == node) {
         if (node->prev) {
             node->prev->next = NULL;
         }
-        tail = node->prev;
+        p_list->tail = node->prev;
     }
     else {
         node->prev->next = node->next;
@@ -95,13 +133,20 @@ static void delete_node_from_linked_list(void *p_node)
     }
     printf("Deleting Node that has p_value =%p\n",node->p_value);
     free(node);
-    count--;
+    p_list->count--;
 }
 
-static long count_total_nodes_in_linked_list()
+static long count_total_nodes_in_linked_list(doubly_linked_list_t *p_list)
 {
     long count = 0;
-    doubly_linked_list *node = head;
+    node_t *node = NULL;
+
+    if (!p_list) {
+        printf("Invalid input parameters.\n");
+        return count;
+    }
+
+    node = p_list->head;
 
     while(node)
     {
@@ -112,10 +157,17 @@ static long count_total_nodes_in_linked_list()
     return count;
 }
 
-static void print_nodes_in_linked_list()
+static void print_nodes_in_linked_list(doubly_linked_list_t *p_list)
 {
     long count = 0;
-    doubly_linked_list *node = head;
+    node_t *node = NULL;
+
+    if (!p_list) {
+        printf("Invalid input parameters.\n");
+        return;
+    }
+
+    node = p_list->head;
 
     while(node)
     {
@@ -130,44 +182,49 @@ void doubly_linked_list_revise()
     int index = 0;
 
     int *p_array = (int *) calloc(max_length,sizeof(int));
+
+    doubly_linked_list_t list = {0};
+
     printf("************ Doubly Linked List************************\n");
-    for(index=0; index < max_length; index++)
-    {
-        p_array[index]=index;
-        add_node_to_linked_list((void *)p_array + index);
-    }
-
-    print_nodes_in_linked_list();
-
-    printf("Total number of nodes = %ld.\n",count_total_nodes_in_linked_list());
-
-    for(index=0; index < max_length; index++)
-    {
-        delete_node_from_linked_list((void *)p_array + index);
-    }
-
-    print_nodes_in_linked_list();
-
-    printf("Total number of nodes = %ld.\n",count_total_nodes_in_linked_list());
 
     for(index=0; index < max_length; index++)
     {
         p_array[index]=index;
-        add_node_to_linked_list((void *)p_array + index);
+        add_node_to_linked_list(&list,(void *)p_array + index);
     }
 
-    print_nodes_in_linked_list();
+    print_nodes_in_linked_list(&list);
 
-    printf("Total number of nodes = %ld.\n",count_total_nodes_in_linked_list());
+    printf("Total number of nodes = %ld.\n",count_total_nodes_in_linked_list(&list));
 
-    reverse_linked_list();
+    for(index=0; index < max_length; index++)
+    {
+        delete_node_from_linked_list(&list,(void *)p_array + index);
+    }
+
+    print_nodes_in_linked_list(&list);
+
+    printf("Total number of nodes = %ld.\n",count_total_nodes_in_linked_list(&list));
+
+    for(index=0; index < max_length; index++)
+    {
+        p_array[index]=index;
+        add_node_to_linked_list(&list,(void *)p_array + index);
+    }
+
+    print_nodes_in_linked_list(&list);
+
+    printf("Total number of nodes = %ld.\n",count_total_nodes_in_linked_list(&list));
+
+    reverse_linked_list(&list);
 
     printf("After reversing...\n");
 
-    print_nodes_in_linked_list();
+    print_nodes_in_linked_list(&list);
 
-    printf("Total number of nodes = %ld.\n",count_total_nodes_in_linked_list());
+    printf("Total number of nodes = %ld.\n",count_total_nodes_in_linked_list(&list));
 
     free(p_array);
 
+    free_linked_list(&list);
 }

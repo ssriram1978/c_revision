@@ -53,12 +53,22 @@ static void add_node_to_linked_list(singly_linked_list *p_list,void *p_node)
 
 static void free_linked_list(singly_linked_list *p_list)
 {
-    if (!p_list) {
+    node_t *p_node = NULL, *next = NULL;
+
+    if (!p_list || !p_list->head) {
         printf("Invalid input parameters.\n");
         return;
     }
 
+    p_node = p_list->head;
+    next = p_list->head;
+    while(p_node) {
+        next = p_node->next;
+        free(p_node);
+        p_node = next;
+    }
 }
+
 static void reverse_linked_list(singly_linked_list *p_list)
 {
     node_t *currNode = NULL, *prevNode = NULL, *nextNode = NULL;
@@ -213,5 +223,7 @@ void singly_linked_list_revise()
     printf("Total number of nodes = %ld.\n",count_total_nodes_in_linked_list(&singly_linked_list));
 
     free(p_array);
+
+    free_linked_list(&singly_linked_list);
 
 }
