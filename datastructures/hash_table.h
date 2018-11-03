@@ -11,6 +11,7 @@
 #include <sys/time.h>
 #include <time.h>       /* time */
 #include <sys/time.h>
+#include <math.h>
 
 #ifndef HASH_TABLE_SIZE
 #define HASH_TABLE_SIZE 100000

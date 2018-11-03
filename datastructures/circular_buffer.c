@@ -80,17 +80,19 @@ static void print_circular_buff(circ_buf_t *p_circ_buf) {
         printf("Queue is empty");
     } else if (p_circ_buf->tail < p_circ_buf->head) {
         for (index = p_circ_buf->head; index < p_circ_buf->maxlen; index++) {
-            printf("Next value = %u.\n", p_circ_buf[index]);
+            printf("Next value = %u.\n", p_circ_buf->buffer[index]);
         }
-        for (index = 0; index <= p_circ_buf->tail; index++) {
-            printf("Next value = %u.\n", p_circ_buf[index]);
+        for (index = 0; index < p_circ_buf->tail; index++) {
+            printf("Next value = %u.\n", p_circ_buf->buffer[index]);
         }
     } else {
-        for (index = p_circ_buf->head; index <= p_circ_buf->tail; index++) {
-            printf("Next value = %u.\n", p_circ_buf[index]);
+        for (index = p_circ_buf->head; index < p_circ_buf->tail; index++) {
+            printf("Next value = %u.\n", p_circ_buf->buffer[index]);
         }
     }
 }
+
+#define MAX_RING_SIZE 8
 
 void revise_circular_buffer()
 {
@@ -98,8 +100,10 @@ void revise_circular_buffer()
     uint8_t index = 0;
 
     p_circ_buf = calloc(1, sizeof(circ_buf_t));
-    p_circ_buf->maxlen = 8;
-    p_circ_buf->buffer = (unsigned char *) calloc(8,sizeof(uint8_t));
+    p_circ_buf->maxlen = MAX_RING_SIZE;
+    p_circ_buf->buffer = (unsigned char *) calloc(MAX_RING_SIZE,sizeof(uint8_t));
+
+    printf("***************Circular ring buffer*************\n");
 
     for(index=0; index < 10; index++) {
         printf("Enqueuing %d was %d.\n",index,enqueue(p_circ_buf, index));
@@ -111,6 +115,34 @@ void revise_circular_buffer()
         uint8_t value = -1;
         printf("Dequeued %d from the ring buffer was %d.\n",value, dequeue(p_circ_buf, &value));
     }
+
+    for(index=0; index < 5; index++) {
+        printf("Enqueuing %d was %d.\n",index,enqueue(p_circ_buf, index));
+    }
+
+    print_circular_buff(p_circ_buf);
+
+    for(index=0; index < 3; index++) {
+        uint8_t value = -1;
+        printf("Dequeued %d from the ring buffer was %d.\n",value, dequeue(p_circ_buf, &value));
+    }
+
+    for(index=0; index < 8; index++) {
+        printf("Enqueuing %d was %d.\n",index,enqueue(p_circ_buf, index));
+    }
+
+    print_circular_buff(p_circ_buf);
+
+    for(index=0; index < 3; index++) {
+        uint8_t value = -1;
+        printf("Dequeued %d from the ring buffer was %d.\n",value, dequeue(p_circ_buf, &value));
+    }
+
+    for(index=0; index < 5; index++) {
+        printf("Enqueuing %d was %d.\n",index,enqueue(p_circ_buf, index));
+    }
+
+    print_circular_buff(p_circ_buf);
 
     free(p_circ_buf->buffer);
     free(p_circ_buf);

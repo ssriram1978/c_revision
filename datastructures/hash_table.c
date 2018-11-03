@@ -4,8 +4,6 @@
 
 #include "hash_table.h"
 
-#include "hash_table.h"
-#include <math.h>
 
 Node *hash[HASH_TABLE_SIZE+1] = {0};
 
@@ -301,7 +299,7 @@ long find_entry_in_hash_table(long player_id,unsigned char table_id)
 long find_entry_in_hash_table2(long percentile,long *key, unsigned char table_id)
 {
     int found = 0;
-    long hash_key = lround((largest_value * percentile)/100);
+    long hash_key = 0;//lround((largest_value * percentile)/100);
     unsigned long h = calculate_hash_key2(hash_key);
     long value = 0;
     Node *top = NULL;

@@ -6,6 +6,7 @@
 #include "datastructures/hash_table.h"
 #include "datastructures/queue.h"
 #include "datastructures/binary_tree.h"
+#include "datastructures/circular_buffer.h"
 
 int max_length = 10;
 
