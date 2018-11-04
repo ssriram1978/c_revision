@@ -43,6 +43,7 @@ void delete_node_from_linked_list(singly_linked_list_t *p_list,
                                   void *p_key);
 
 void singly_linked_list_revise();
+void free_linked_list(singly_linked_list_t *p_list);
 
 void prepare_data(void **p_data, void **p_key);
 

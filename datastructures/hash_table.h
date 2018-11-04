@@ -13,6 +13,10 @@
 #include <sys/time.h>
 #include <math.h>
 
+#ifndef HASH_TABLE_SIZE
+#define HASH_TABLE_SIZE 5
+#endif
+
 void revise_hash_table();
 
 #endif //C_REVISION_HASH_TABLE_H

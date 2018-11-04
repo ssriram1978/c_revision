@@ -9,22 +9,57 @@ extern long max_length;
 
 long compute_index_to_key_hash(void *p_key) {
     long index = -1;
-    if (!p_key) {
+    if (p_key < 0) {
         printf("Invalid input parameter.p_key is NULL.\n");
         return index;
     }
-    index = (unsigned long)p_key % max_length;
+    index = (unsigned long)p_key % HASH_TABLE_SIZE;
     return index;
 }
 
-void add_to_hash_table(singly_linked_list_t *p_hash_table,
+static int check_entry_in_hash_table(singly_linked_list_t *p_hash_table,
+                              void *p_key,
+                              void **p_data)
+{
+    int entry_found = 0;
+    long hash_index = -1;
+
+    singly_linked_list_t *p_current_row = NULL;
+
+    if (!p_hash_table ||  !p_key || !p_data) {
+        printf("Invalid Input parameters.\n");
+        return entry_found;
+    }
+
+    hash_index = compute_index_to_key_hash(p_key);
+
+    if (hash_index == -1) {
+        printf("Invalid hash index.\n");
+        return entry_found;
+    }
+
+    p_current_row = (singly_linked_list_t *) p_hash_table + hash_index;
+
+    if (!p_current_row) {
+        printf("Unable to find a row for the key (%ld).\n",((long)p_key));
+        return entry_found;
+    }
+
+    entry_found = find_node_in_linked_list(p_current_row,
+                                           p_key,
+                                           p_data);
+
+    return entry_found;
+}
+
+static void add_to_hash_table(singly_linked_list_t *p_hash_table,
         void *p_key,
         void *p_data) {
 
     long hash_index = -1;
     singly_linked_list_t *p_current_row = NULL;
 
-    if (!p_hash_table || !p_data || !p_key) {
+    if (!p_hash_table || !p_data || p_key < 0) {
         printf("Invalid Input parameters.\n");
         return;
     }
@@ -55,10 +90,10 @@ void add_to_hash_table(singly_linked_list_t *p_hash_table,
     add_node_to_linked_list(p_current_row,p_key,p_data);
 }
 
-void print_hash_table(singly_linked_list_t *p_hash_table)
+static void print_hash_table(singly_linked_list_t *p_hash_table)
 {
     long index = 0;
-    for (index=0; index < max_length; index++)
+    for (index=0; index < HASH_TABLE_SIZE; index++)
     {
         singly_linked_list_t *p_list = NULL;
         node_t *p_node = NULL;
@@ -87,7 +122,7 @@ void print_hash_table(singly_linked_list_t *p_hash_table)
 
 void revise_hash_table()
 {
-    singly_linked_list_t *p_hash_table = calloc(max_length,sizeof(singly_linked_list_t));
+    singly_linked_list_t *p_hash_table = calloc(HASH_TABLE_SIZE,sizeof(singly_linked_list_t));
     long index =0;
 
     void *p_data = NULL;
@@ -116,8 +151,18 @@ void revise_hash_table()
 
     print_hash_table(p_hash_table);
 
+    for (index = 0; index < max_length; index++)
+    {
+        void *p_temp_data = NULL;
+        printf("check_entry_in_hash_table for %ld returned %d.\n",
+               *((long *)p_key+index),
+               check_entry_in_hash_table(p_hash_table,
+                          (void *)*((long *)p_key+index),
+                          &p_temp_data));
+    }
+
+    free(p_hash_table);
     free(p_data);
     free(p_key);
-    free(p_hash_table);
 
 }
