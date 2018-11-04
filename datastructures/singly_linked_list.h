@@ -13,6 +13,12 @@
 #include <time.h>       /* time */
 #include <sys/time.h>
 
+typedef struct __player {
+    char player_name[20];
+    long player_id;
+    long player_score;
+}player_t;
+
 typedef struct _node
 {
     void *p_key;
@@ -31,7 +37,8 @@ void add_node_to_linked_list(singly_linked_list *p_list,
                              void *p_key,
                              void *p_value);
 int find_node_in_linked_list(singly_linked_list *p_list,
-                             void *p_key);
+                             void *p_key,
+                             void **p_data);
 void delete_node_from_linked_list(singly_linked_list *p_list,
                                   void *p_key);
 

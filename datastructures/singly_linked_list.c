@@ -130,12 +130,14 @@ void delete_node_from_linked_list(singly_linked_list *p_list,
     p_list->count--;
 }
 
-int find_node_in_linked_list(singly_linked_list *p_list,void *p_key)
+int find_node_in_linked_list(singly_linked_list *p_list,
+                             void *p_key,
+                             void **p_data)
 {
     node_t *node = p_list->head;
     int found = -1;
 
-    if (!p_list || !node) {
+    if (!p_list || !node || !p_data) {
         printf("Invalid input parameters.\n");
         return found;
     }
@@ -153,6 +155,7 @@ int find_node_in_linked_list(singly_linked_list *p_list,void *p_key)
 
     printf("Found Node that has p_key= %p and p_value =%p\n",node->p_key,node->p_value);
     found = 1;
+    *p_data = node->p_value;
     return found;
 }
 
@@ -203,12 +206,6 @@ static void print_nodes_in_linked_list(singly_linked_list *p_list)
 void prepare_data(void **p_data, void **p_key)
 {
     long index;
-    typedef struct __player {
-        char player_name[10];
-        long player_id;
-        long player_score;
-    }player_t;
-
     player_t *p_player_data = NULL;
     long *p_player_id = NULL;
 
@@ -220,13 +217,12 @@ void prepare_data(void **p_data, void **p_key)
     p_player_data = (player_t *) calloc(max_length,sizeof(player_t));
     p_player_id = (long *) calloc(max_length,sizeof(long));
 
-    for(index=100;index < max_length+100;index++) {
+    for(index=0;index < max_length;index++) {
         sprintf((p_player_data+index)->player_name,"%s%ld","Hello",index);
         (p_player_data+index)->player_id = index;
         (p_player_data+index)->player_score = index+100;
         *(p_player_id+index) = index;
     }
-
     *p_data = p_player_data;
     *p_key = p_player_id;
 }
@@ -238,15 +234,25 @@ void singly_linked_list_revise()
     void *p_data = NULL;
     void *p_key = NULL;
 
+    printf("************ Singly Linked List************************\n");
+
     //Prepare data.
     prepare_data(&p_data, &p_key);
 
-    printf("************ Singly Linked List************************\n");
+    for(index=0; index < max_length; index++)
+    {
+        printf("Key = %ld, Player name = %s, player_id=%ld, player_score=%ld.\n",
+               *(((long *)p_key+index)),
+               (((player_t *)p_data+index))->player_name,
+               (((player_t *)p_data+index))->player_id,
+               (((player_t *)p_data+index))->player_score);
+    }
+
     for(index=0; index < max_length; index++)
     {
         add_node_to_linked_list(&singly_linked_list,
-                (void *)(p_key + index),
-                (void *)(p_data + index));
+                (void *)*((long *)p_key + index),
+                (void *)((player_t *)p_data + index));
     }
 
     print_nodes_in_linked_list(&singly_linked_list);
@@ -257,7 +263,7 @@ void singly_linked_list_revise()
     for(index=0; index < max_length; index++)
     {
         delete_node_from_linked_list(&singly_linked_list,
-                                     (void *)(p_key + index));
+                                     (void *)*((long *)p_key + index));
     }
 
     print_nodes_in_linked_list(&singly_linked_list);
@@ -268,8 +274,8 @@ void singly_linked_list_revise()
     for(index=0; index < max_length; index++)
     {
         add_node_to_linked_list(&singly_linked_list,
-                                (void *)(p_key + index),
-                                (void *) (p_data + index));
+                                (void *)*((long *)p_key + index),
+                                (void *)((player_t *)p_data + index));
     }
 
     print_nodes_in_linked_list(&singly_linked_list);
@@ -288,13 +294,19 @@ void singly_linked_list_revise()
 
     for(index=0; index < max_length; index++)
     {
-        printf("searching for node %p in linked list returned %d.\n",
-               (p_key + index),
+        void *p_data = NULL;
+        printf("searching for node %ld in linked list returned %d.\n",
+               *((long *)p_key + index),
                 find_node_in_linked_list(&singly_linked_list,
-                                         (void *)(p_key + index)));
+                                         (void *)*((long *)p_key + index),
+                                         &p_data));
+        printf("Player name = %s, player_id=%ld, player_score=%ld.\n",
+               ((player_t *)p_data)->player_name,
+               ((player_t *)p_data)->player_id,
+               ((player_t *)p_data)->player_score);
     }
 
+    free_linked_list(&singly_linked_list);
     free(p_key);
     free(p_data);
-    free_linked_list(&singly_linked_list);
 }
