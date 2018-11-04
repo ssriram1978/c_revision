@@ -8,7 +8,7 @@ typedef struct {
     uint8_t * buffer;
     int head;
     int tail;
-    int maxlen;
+    long maxlen;
 } circ_buf_t;
 
 extern long max_length;

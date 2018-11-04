@@ -14,7 +14,9 @@
 #include <time.h>       /* time */
 #include <sys/time.h>
 
-
+#ifndef MAX_RANDOM_NUMBER
+#define MAX_RANDOM_NUMBER 500
+#endif
 
 void revise_binary_tree();
 
