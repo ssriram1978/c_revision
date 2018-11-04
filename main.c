@@ -18,5 +18,6 @@ int main() {
     singly_linked_list_revise();
     doubly_linked_list_revise();
     revise_circular_buffer();
+    revise_hash_table();
     return 0;
 }

@@ -26,22 +26,24 @@ typedef struct _node
     struct _node *next;
 } node_t;
 
-typedef struct _singly_linked_list {
+typedef struct _singly_linked_list_t {
     node_t *head;
     node_t *tail;
     long count;
-} singly_linked_list;
+} singly_linked_list_t;
 
 
-void add_node_to_linked_list(singly_linked_list *p_list,
+void add_node_to_linked_list(singly_linked_list_t *p_list,
                              void *p_key,
                              void *p_value);
-int find_node_in_linked_list(singly_linked_list *p_list,
+int find_node_in_linked_list(singly_linked_list_t *p_list,
                              void *p_key,
                              void **p_data);
-void delete_node_from_linked_list(singly_linked_list *p_list,
+void delete_node_from_linked_list(singly_linked_list_t *p_list,
                                   void *p_key);
 
 void singly_linked_list_revise();
+
+void prepare_data(void **p_data, void **p_key);
 
 #endif //C_REVISION_SINGLY_LINKED_LIST_H

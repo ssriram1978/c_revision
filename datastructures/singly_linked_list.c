@@ -4,13 +4,12 @@
 
 #include "singly_linked_list.h"
 
-static long count_total_nodes_in_linked_list(singly_linked_list *p_list);
-static void print_nodes_in_linked_list(singly_linked_list *p_list);
-static void reverse_linked_list(singly_linked_list *p_list);
+static long count_total_nodes_in_linked_list(singly_linked_list_t *p_list);
+static void print_nodes_in_linked_list(singly_linked_list_t *p_list);
+static void reverse_linked_list(singly_linked_list_t *p_list);
 extern long max_length;
 
-
-void add_node_to_linked_list(singly_linked_list *p_list,
+void add_node_to_linked_list(singly_linked_list_t *p_list,
                              void *p_key,
                              void *p_value)
 {
@@ -40,7 +39,7 @@ void add_node_to_linked_list(singly_linked_list *p_list,
     }
 }
 
-void free_linked_list(singly_linked_list *p_list)
+void free_linked_list(singly_linked_list_t *p_list)
 {
     node_t *p_node = NULL, *next = NULL;
 
@@ -58,7 +57,7 @@ void free_linked_list(singly_linked_list *p_list)
     }
 }
 
-static void reverse_linked_list(singly_linked_list *p_list)
+static void reverse_linked_list(singly_linked_list_t *p_list)
 {
     node_t *currNode = NULL, *prevNode = NULL, *nextNode = NULL;
 
@@ -88,7 +87,7 @@ static void reverse_linked_list(singly_linked_list *p_list)
     }
 }
 
-void delete_node_from_linked_list(singly_linked_list *p_list,
+void delete_node_from_linked_list(singly_linked_list_t *p_list,
                                   void *p_key)
 {
     node_t *node = p_list->head;
@@ -130,7 +129,7 @@ void delete_node_from_linked_list(singly_linked_list *p_list,
     p_list->count--;
 }
 
-int find_node_in_linked_list(singly_linked_list *p_list,
+int find_node_in_linked_list(singly_linked_list_t *p_list,
                              void *p_key,
                              void **p_data)
 {
@@ -160,7 +159,7 @@ int find_node_in_linked_list(singly_linked_list *p_list,
 }
 
 
-static long count_total_nodes_in_linked_list(singly_linked_list *p_list)
+static long count_total_nodes_in_linked_list(singly_linked_list_t *p_list)
 {
     long count = 0;
     node_t *node = NULL;
@@ -181,7 +180,7 @@ static long count_total_nodes_in_linked_list(singly_linked_list *p_list)
     return count;
 }
 
-static void print_nodes_in_linked_list(singly_linked_list *p_list)
+static void print_nodes_in_linked_list(singly_linked_list_t *p_list)
 {
     long count = 0;
     node_t *node = p_list->head;
@@ -230,7 +229,7 @@ void prepare_data(void **p_data, void **p_key)
 void singly_linked_list_revise()
 {
     int index = 0;
-    singly_linked_list singly_linked_list = {0};
+    singly_linked_list_t singly_linked_list = {0};
     void *p_data = NULL;
     void *p_key = NULL;
 
