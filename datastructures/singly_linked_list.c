@@ -87,15 +87,16 @@ static void reverse_linked_list(singly_linked_list_t *p_list)
     }
 }
 
-void delete_node_from_linked_list(singly_linked_list_t *p_list,
+int delete_node_from_linked_list(singly_linked_list_t *p_list,
                                   void *p_key)
 {
+    int delete_successful = 0;
     node_t *node = p_list->head;
     node_t *prev = p_list->head;
 
     if (!p_list || !node) {
         printf("Invalid input parameters.\n");
-        return;
+        return delete_successful;
     }
 
     while(node && node->p_key != p_key)
@@ -107,7 +108,7 @@ void delete_node_from_linked_list(singly_linked_list_t *p_list,
     if(!node)
     {
         printf("Unable to locate the node with key =%p\n",p_key);
-        return;
+        return delete_successful;
     }
 
     prev->next = node->next;
@@ -127,6 +128,8 @@ void delete_node_from_linked_list(singly_linked_list_t *p_list,
     printf("Deleting Node that has p_value =%p\n",node->p_value);
     free(node);
     p_list->count--;
+    delete_successful = 1;
+    return delete_successful;
 }
 
 int find_node_in_linked_list(singly_linked_list_t *p_list,

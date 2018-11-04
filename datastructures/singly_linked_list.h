@@ -39,7 +39,7 @@ void add_node_to_linked_list(singly_linked_list_t *p_list,
 int find_node_in_linked_list(singly_linked_list_t *p_list,
                              void *p_key,
                              void **p_data);
-void delete_node_from_linked_list(singly_linked_list_t *p_list,
+int delete_node_from_linked_list(singly_linked_list_t *p_list,
                                   void *p_key);
 
 void singly_linked_list_revise();
