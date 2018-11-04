@@ -4,27 +4,15 @@
 
 #include "singly_linked_list.h"
 
-
-typedef struct _node
-{
-    void *p_value;
-    struct _node *next;
-} node_t;
-
-typedef struct _singly_linked_list {
-    node_t *head;
-    node_t *tail;
-    long count;
-} singly_linked_list;
-
-static void add_node_to_linked_list(singly_linked_list *p_list,void *p_node);
-static void delete_node_from_linked_list(singly_linked_list *p_list,void *p_node);
 static long count_total_nodes_in_linked_list(singly_linked_list *p_list);
 static void print_nodes_in_linked_list(singly_linked_list *p_list);
 static void reverse_linked_list(singly_linked_list *p_list);
 extern long max_length;
 
-static void add_node_to_linked_list(singly_linked_list *p_list,void *p_node)
+
+void add_node_to_linked_list(singly_linked_list *p_list,
+                             void *p_key,
+                             void *p_value)
 {
     node_t *ptr = NULL;
 
@@ -34,7 +22,8 @@ static void add_node_to_linked_list(singly_linked_list *p_list,void *p_node)
     }
 
     ptr = (node_t *) calloc(1,sizeof(node_t));
-    ptr->p_value = p_node;
+    ptr->p_value = p_value;
+    ptr->p_key = p_key;
 
     if(p_list->head == NULL)
     {
@@ -51,7 +40,7 @@ static void add_node_to_linked_list(singly_linked_list *p_list,void *p_node)
     }
 }
 
-static void free_linked_list(singly_linked_list *p_list)
+void free_linked_list(singly_linked_list *p_list)
 {
     node_t *p_node = NULL, *next = NULL;
 
@@ -99,7 +88,8 @@ static void reverse_linked_list(singly_linked_list *p_list)
     }
 }
 
-static void delete_node_from_linked_list(singly_linked_list *p_list,void *p_node)
+void delete_node_from_linked_list(singly_linked_list *p_list,
+                                  void *p_key)
 {
     node_t *node = p_list->head;
     node_t *prev = p_list->head;
@@ -109,7 +99,7 @@ static void delete_node_from_linked_list(singly_linked_list *p_list,void *p_node
         return;
     }
 
-    while(node && node->p_value != p_node)
+    while(node && node->p_key != p_key)
     {
         prev = node;
         node = node->next;
@@ -117,7 +107,7 @@ static void delete_node_from_linked_list(singly_linked_list *p_list,void *p_node
 
     if(!node)
     {
-        printf("Unable to locate the node with value =%p\n",p_node);
+        printf("Unable to locate the node with key =%p\n",p_key);
         return;
     }
 
@@ -139,6 +129,33 @@ static void delete_node_from_linked_list(singly_linked_list *p_list,void *p_node
     free(node);
     p_list->count--;
 }
+
+int find_node_in_linked_list(singly_linked_list *p_list,void *p_key)
+{
+    node_t *node = p_list->head;
+    int found = -1;
+
+    if (!p_list || !node) {
+        printf("Invalid input parameters.\n");
+        return found;
+    }
+
+    while(node && node->p_key != p_key)
+    {
+        node = node->next;
+    }
+
+    if(!node)
+    {
+        printf("Unable to locate the node with value =%p\n",p_key);
+        return found;
+    }
+
+    printf("Found Node that has p_key= %p and p_value =%p\n",node->p_key,node->p_value);
+    found = 1;
+    return found;
+}
+
 
 static long count_total_nodes_in_linked_list(singly_linked_list *p_list)
 {
@@ -173,46 +190,92 @@ static void print_nodes_in_linked_list(singly_linked_list *p_list)
 
     while(node)
     {
-        printf("Node at index =%ld has p_value =%p\n",count,node->p_value);
+        printf("Node at index =%ld has p_key = %p and p_value =%p\n",
+                count,
+                node->p_key,
+                node->p_value);
+
         node = node->next;
         count++;
     }
+}
+
+void prepare_data(void **p_data, void **p_key)
+{
+    long index;
+    typedef struct __player {
+        char player_name[10];
+        long player_id;
+        long player_score;
+    }player_t;
+
+    player_t *p_player_data = NULL;
+    long *p_player_id = NULL;
+
+    if (!p_data || !p_key) {
+        printf("Invalid inpur parameters.\n");
+        return;
+    }
+
+    p_player_data = (player_t *) calloc(max_length,sizeof(player_t));
+    p_player_id = (long *) calloc(max_length,sizeof(long));
+
+    for(index=100;index < max_length+100;index++) {
+        sprintf((p_player_data+index)->player_name,"%s%ld","Hello",index);
+        (p_player_data+index)->player_id = index;
+        (p_player_data+index)->player_score = index+100;
+        *(p_player_id+index) = index;
+    }
+
+    *p_data = p_player_data;
+    *p_key = p_player_id;
 }
 
 void singly_linked_list_revise()
 {
     int index = 0;
     singly_linked_list singly_linked_list = {0};
-    int *p_array = (int *) calloc(max_length,sizeof(int));
+    void *p_data = NULL;
+    void *p_key = NULL;
+
+    //Prepare data.
+    prepare_data(&p_data, &p_key);
+
     printf("************ Singly Linked List************************\n");
     for(index=0; index < max_length; index++)
     {
-        p_array[index]=index;
-        add_node_to_linked_list(&singly_linked_list,(void *)p_array + index);
+        add_node_to_linked_list(&singly_linked_list,
+                (void *)(p_key + index),
+                (void *)(p_data + index));
     }
 
     print_nodes_in_linked_list(&singly_linked_list);
 
-    printf("Total number of nodes = %ld.\n",count_total_nodes_in_linked_list(&singly_linked_list));
+    printf("Total number of nodes = %ld.\n",
+            count_total_nodes_in_linked_list(&singly_linked_list));
 
     for(index=0; index < max_length; index++)
     {
-        delete_node_from_linked_list(&singly_linked_list, (void *)(p_array + index));
+        delete_node_from_linked_list(&singly_linked_list,
+                                     (void *)(p_key + index));
     }
 
     print_nodes_in_linked_list(&singly_linked_list);
 
-    printf("Total number of nodes = %ld.\n",count_total_nodes_in_linked_list(&singly_linked_list));
+    printf("Total number of nodes = %ld.\n",
+            count_total_nodes_in_linked_list(&singly_linked_list));
 
     for(index=0; index < max_length; index++)
     {
-        p_array[index]=index;
-        add_node_to_linked_list(&singly_linked_list,(void *)(p_array + index));
+        add_node_to_linked_list(&singly_linked_list,
+                                (void *)(p_key + index),
+                                (void *) (p_data + index));
     }
 
     print_nodes_in_linked_list(&singly_linked_list);
 
-    printf("Total number of nodes = %ld.\n",count_total_nodes_in_linked_list(&singly_linked_list));
+    printf("Total number of nodes = %ld.\n",
+            count_total_nodes_in_linked_list(&singly_linked_list));
 
     reverse_linked_list(&singly_linked_list);
 
@@ -220,10 +283,18 @@ void singly_linked_list_revise()
 
     print_nodes_in_linked_list(&singly_linked_list);
 
-    printf("Total number of nodes = %ld.\n",count_total_nodes_in_linked_list(&singly_linked_list));
+    printf("Total number of nodes = %ld.\n",
+            count_total_nodes_in_linked_list(&singly_linked_list));
 
-    free(p_array);
+    for(index=0; index < max_length; index++)
+    {
+        printf("searching for node %p in linked list returned %d.\n",
+               (p_key + index),
+                find_node_in_linked_list(&singly_linked_list,
+                                         (void *)(p_key + index)));
+    }
 
+    free(p_key);
+    free(p_data);
     free_linked_list(&singly_linked_list);
-
 }
