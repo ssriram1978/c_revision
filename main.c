@@ -19,5 +19,6 @@ int main() {
     doubly_linked_list_revise();
     revise_circular_buffer();
     revise_hash_table();
+    revise_binary_tree();
     return 0;
 }
