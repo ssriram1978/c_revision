@@ -53,7 +53,7 @@ unsigned char dequeue(queue_t **pp_queue,void **pp_node)
 
     if(!p_node)
     {
-        printf("Invalid node.\n");
+        //printf("Invalid node.\n");
         return success;
     }
 

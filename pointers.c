@@ -32,6 +32,34 @@ void strcat_example() {
     free(ptr);
 }
 
+void strtok_example() {
+    char str[] ="- This, \r\n a sample string.\n";
+    char * pch;
+    char *p_str2 = NULL;
+
+    printf("*******strtok example ************.\n");
+    p_str2 = (char *) calloc(strlen(str),sizeof(char));
+    strcpy(p_str2,str);
+
+    printf ("Splitting string \"%s\" into tokens:\n",p_str2);
+    pch = strtok (p_str2," ,.-\r\n");
+    while (pch != NULL)
+    {
+        printf ("%s\n",pch);
+        pch = strtok (NULL, " ,.-\r\n");
+    }
+
+    printf ("Second iteration. Splitting string \"%s\" into tokens:\n",str);
+    strcpy(p_str2,str);
+    pch = strtok (p_str2," ,.-\r\n");
+    while (pch != NULL)
+    {
+        printf ("%s\n",pch);
+        pch = strtok (NULL, " ,.-\r\n");
+    }
+    free(p_str2);
+}
+
 void const_pointers_example() {
     char array[] = "Hello";
     const char *ptr = array; //value pointed by ptr cannot be changed but the pointer can be changed.
@@ -74,5 +102,6 @@ void revise_pointers() {
     free(ptr1);
     const_pointers_example();
     strcat_example();
+    strtok_example();
 
 }
