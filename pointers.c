@@ -22,6 +22,16 @@ void pass_by_reference(char **ptr) {
     memcpy((void *)*ptr,(void *)"hello world",strlen("hello world"));
 }
 
+void strcat_example() {
+    char *ptr = calloc(20,sizeof(char));
+    char ptr2[] = " \n";
+    printf("*******strcat example ************.\n");
+    memcpy(ptr,"Hello",strlen("Hello"));
+    strcat(ptr,ptr2);
+    printf("ptr=%s.",ptr);
+    free(ptr);
+}
+
 void const_pointers_example() {
     char array[] = "Hello";
     const char *ptr = array; //value pointed by ptr cannot be changed but the pointer can be changed.
@@ -42,7 +52,6 @@ void const_pointers_example() {
     printf("ptr2=%s.\n",ptr2);
     //ptr2 = "123"; //error: assignment of read-only variable ‘ptr2’
     free(ptr2);
-
 }
 
 void revise_pointers() {
@@ -64,5 +73,6 @@ void revise_pointers() {
     free(ptr2);
     free(ptr1);
     const_pointers_example();
+    strcat_example();
 
 }

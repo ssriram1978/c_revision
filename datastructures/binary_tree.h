@@ -18,7 +18,14 @@
 #define MAX_RANDOM_NUMBER 500
 #endif
 
-void revise_binary_tree();
+typedef struct _binary_tree
+{
+    long id;
+    struct _binary_tree *leftchild;
+    struct _binary_tree *rightchild;
+} binary_tree_t;
 
+void revise_binary_tree();
+void free_binary_tree(binary_tree_t *p_node);
 
 #endif //C_REVISION_BINARY_TREE_H
