@@ -403,17 +403,18 @@ void revise_binary_tree()
 
     free_binary_tree(p_head);
 
-    p_head = create_binary_tree_from_input(p_binary_tree_str);
 
+    p_head = create_binary_tree_from_input(p_binary_tree_str);
     if (p_head) {
         char *p_binary_tree_str = NULL;
         printf("Successfully fetched a binary tree from string formatted text. \n");
         p_binary_tree_str = get_printable_binary_tree_string(p_head);
         printf("Binary tree printable string = %s.\n",p_binary_tree_str);
+        printf("isBST() returned %d.\n",isBST(p_head));
         free(p_binary_tree_str);
     }
-
     free_binary_tree(p_head);
+
 
     free(p_binary_tree_str);
 }

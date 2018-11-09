@@ -137,7 +137,7 @@ void revise_queue() {
         p_player_details->player_score = player_score++;
         enqueue(&p_queue,p_player_details);
     }
-    printf("queue size = %d.\n",count_queue_size(p_queue));
+    printf("queue size = %ld.\n",count_queue_size(p_queue));
     printf("print_queue:\n");
     print_queue(p_queue);
 
@@ -148,7 +148,7 @@ void revise_queue() {
             free(p_player_details);
         }
     }
-    printf("queue size = %d.\n",count_queue_size(p_queue));
+    printf("queue size = %ld.\n",count_queue_size(p_queue));
 
     free(p_queue);
 }

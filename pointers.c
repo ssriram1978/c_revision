@@ -38,8 +38,8 @@ void strtok_example() {
     char *p_str2 = NULL;
 
     printf("*******strtok example ************.\n");
-    p_str2 = (char *) calloc(strlen(str),sizeof(char));
-    strcpy(p_str2,str);
+    p_str2 = (char *) calloc(strlen(str)+1,sizeof(char));
+    strncpy(p_str2,str,strlen(str));
 
     printf ("Splitting string \"%s\" into tokens:\n",p_str2);
     pch = strtok (p_str2," ,.-\r\n");
@@ -49,8 +49,8 @@ void strtok_example() {
         pch = strtok (NULL, " ,.-\r\n");
     }
 
-    printf ("Second iteration. Splitting string \"%s\" into tokens:\n",str);
-    strcpy(p_str2,str);
+    printf ("Second iteration. Splitting string \"%s\" into tokens:\n",p_str2);
+    strncpy(p_str2,str,strlen(str));
     pch = strtok (p_str2," ,.-\r\n");
     while (pch != NULL)
     {
