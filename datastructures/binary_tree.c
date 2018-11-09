@@ -76,7 +76,7 @@ static unsigned char isBSTRecurse(binary_tree_t *p_node,
 }
 
 unsigned char isBST(binary_tree_t *p_node) {
-    return isBSTRecurse(p_node,0,0xFFFFFFFFFFFFFFFF);
+    return isBSTRecurse(p_node,(void *)0,(void *)0xFFFFFFFFFFFFFFFF);
 }
 
 static char **get_node_string_from_bt_string(char *p_binary_tree_string)
@@ -111,7 +111,8 @@ static char **get_node_string_from_bt_string(char *p_binary_tree_string)
     printf("Total number of nodes = %ld.\n",count_number_of_nodes);
 
     //Allocate memory for the output array. Assume a long can be of 20 characters.
-    pp_array_of_node_string = (char **) calloc((size_t)count_number_of_nodes,
+    //Keep the last character array list as \0 for deducing the end of character array list.
+    pp_array_of_node_string = (char **) calloc((size_t)count_number_of_nodes+1,
             sizeof(char **));
     strcpy(p_dup_bt_string,p_binary_tree_string);
     pp_node_ptr = pp_array_of_node_string;
@@ -125,27 +126,77 @@ static char **get_node_string_from_bt_string(char *p_binary_tree_string)
         p_token = strtok(NULL," \r\n");
     }
 
-    for(index=0; index < count_number_of_nodes; index++) {
+    /*for(index=0; index < count_number_of_nodes; index++) {
         printf("node at index %ld is %s.\n",index,pp_array_of_node_string[index]);
-    }
+    }*/
 
     free(p_dup_bt_string);
     return pp_array_of_node_string;
 }
 
-static void prepare_btree_from_node_string(binary_tree_t **pp_binary_tree,
-                                           char **p_node_string)
+static binary_tree_t *prepare_btree_recursive(char **pp_node_string,
+                                              long current_node_position,
+                                              long total_number_of_nodes)
 {
-    if (!pp_binary_tree || !p_node_string) {
+    binary_tree_t *p_node = NULL;
+    char *p_current_node_string = NULL;
+    long left_child_position = 0, right_child_position = 0;
+
+    if (!pp_node_string) {
+        return p_node;
+    }
+
+    p_current_node_string = *pp_node_string;
+
+    if (!p_current_node_string) {
+        return p_node;
+    }
+
+    if(!strcmp(p_current_node_string,"NULL")) {
+        //printf("The node is NULL.Return NULL.\n");
+        return p_node;
+    } else  {
+        long p_node_value = atol((const char *)p_current_node_string);
+        p_node = (binary_tree_t *) calloc(1,sizeof(binary_tree_t));
+        p_node->p_key = (void *)p_node_value;
+        p_node->p_value = (void *)p_node_value;
+        /*printf("Storing value = (%s)%ld in the current node.\n",
+               p_current_node_string,
+               (long)p_node->p_key);*/
+        //Find the left child.
+        left_child_position = current_node_position*2+1;
+        if(left_child_position < total_number_of_nodes) {
+            p_node->leftchild = prepare_btree_recursive(pp_node_string+left_child_position,
+                                                        left_child_position,
+                                                        total_number_of_nodes);
+        }
+        //Find the right child.
+        right_child_position = current_node_position*2+2;
+        if (right_child_position < total_number_of_nodes) {
+            p_node->rightchild = prepare_btree_recursive(pp_node_string+right_child_position,
+                                                         right_child_position,
+                                                         total_number_of_nodes);
+        }
+    }
+    return p_node;
+}
+
+static void prepare_btree_from_node_string(binary_tree_t **pp_binary_tree,
+                                           char **pp_node_string,
+                                           long total_number_of_nodes)
+{
+    if (!pp_binary_tree || !pp_node_string || !total_number_of_nodes) {
         printf("Invalid input parameters.\n");
         return;
     }
+    *pp_binary_tree = prepare_btree_recursive(pp_node_string,0,total_number_of_nodes);
 }
 
 binary_tree_t *create_binary_tree_from_input(char *p_binary_tree_string)
 {
     binary_tree_t *p_binary_tree = NULL;
     char **p_node_string = NULL, **p_temp = NULL;
+    long total_number_of_nodes = 0;
 
     if (!p_binary_tree_string) {
         return p_binary_tree;
@@ -156,17 +207,19 @@ binary_tree_t *create_binary_tree_from_input(char *p_binary_tree_string)
         return p_binary_tree;
     }
 
-    //convert the array of strings into a binary tree.
-    prepare_btree_from_node_string(&p_binary_tree,p_node_string);
-
     p_temp = p_node_string;
 
     while(*p_temp) {
         //printf("p_temp=%s.\n",(*p_temp));
         p_temp++;
+        total_number_of_nodes++;
     }
 
+    //convert the array of strings into a binary tree.
+    prepare_btree_from_node_string(&p_binary_tree,p_node_string, total_number_of_nodes);
+
     free(p_node_string);
+
     return p_binary_tree;
 }
 
@@ -192,7 +245,7 @@ static void process_dequeued_node(void *p_dequed_node,
     } else {
         //Append this node value to the p_string.
         char long_int_str[20] = {0};
-        sprintf(long_int_str, "%p ", (void *) ((binary_tree_t *) p_dequed_node)->p_key);
+        sprintf(long_int_str, "%ld ", (long) ((binary_tree_t *) p_dequed_node)->p_key);
         strcat(p_string, long_int_str);
         /*printf("After appending %p, p_string=%s.\n",
                (void *)((binary_tree_t *) p_dequed_node)->p_key,
@@ -343,13 +396,24 @@ void revise_binary_tree()
            find_node(p_head,(void *)random_number));
 
     printf("find_node(%ld) returned %p.\n",
-           12345,
+           (long)12345,
            find_node(p_head,(void *)12345));
 
     printf("isBST() returned %d.\n",isBST(p_head));
 
-    create_binary_tree_from_input(p_binary_tree_str);
+    free_binary_tree(p_head);
+
+    p_head = create_binary_tree_from_input(p_binary_tree_str);
+
+    if (p_head) {
+        char *p_binary_tree_str = NULL;
+        printf("Successfully fetched a binary tree from string formatted text. \n");
+        p_binary_tree_str = get_printable_binary_tree_string(p_head);
+        printf("Binary tree printable string = %s.\n",p_binary_tree_str);
+        free(p_binary_tree_str);
+    }
 
     free_binary_tree(p_head);
+
     free(p_binary_tree_str);
 }
