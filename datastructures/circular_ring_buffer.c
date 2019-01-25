@@ -38,27 +38,32 @@ static int enqueue(circ_buf_t *p_circ_buf, uint8_t value)
     if (!p_circ_buf) {
         return success;
     }
-    //Return 0 when tail is before head.
+    //Return 0 when tail is before head. This means that the queue is full.
     if (p_circ_buf->head-p_circ_buf->tail == 1) {
         return success;
     }
     //Return 0 if head is at 0 and tail is at end of the buffer.
-    if ((p_circ_buf->head == 0) && (p_circ_buf->tail == p_circ_buf->maxlen)) {
+    if ((p_circ_buf->head == 0) && (p_circ_buf->tail == p_circ_buf->maxlen-1)) {
         return success;
     }
 
-    p_circ_buf->buffer[p_circ_buf->tail++] = value;
+    p_circ_buf->buffer[p_circ_buf->tail] = value;
 
     //Reset the tail to 0 when it goes beyond the max size.
     if (p_circ_buf->tail == p_circ_buf->maxlen+1) {
         //If you reached the end and the head is still at 0, keep tail at the end.
         if (p_circ_buf->head == 0) {
-            p_circ_buf->tail--;
+            //Do nothing.
         } else {
             //Rotate and go back to 0.
             p_circ_buf->tail = 0;
         }
+    } else {
+        //increment the tail.
+        p_circ_buf->tail++;
     }
+
+
     success = 1;
     return success;
 }
@@ -77,6 +82,7 @@ static int dequeue(circ_buf_t *p_circ_buf, uint8_t *p_value)
     }
 
     *p_value = p_circ_buf->buffer[p_circ_buf->head];
+    //Erase the content by replacing it with -1.
     p_circ_buf->buffer[p_circ_buf->head++] = (unsigned char) -1;
 
     //Reset the head to 0 when it goes beyond the max size.
