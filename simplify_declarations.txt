@@ -1,0 +1,93 @@
+Take a look at the example →
+
+int *(*(*p)[3])();
+
+We see that the identifier is named p.
+We assume that the *p substring is a temporary D declarator and, using rule number 3,
+we find that the temporary result of our analysis is “pointer”.
+
+We can write it semi-formally as:
+D ← *p pointer
+
+We remove the identified declarator sub-string by replacing it with a temporary D declarator,
+receiving the following statement:
+
+int *(*(D)[3])();
+
+
+The inner pair of parentheses is no longer needed and may be removed, too:
+
+int *(*D[3])();
+
+Since the [] operator has a higher priority than *,
+we can recognize that further analysis results in the following sub-string:
+
+D[3]
+
+This means that the temporary declarator D is a 3-element array. We can describe it as follows:
+D ← D[3] array [3]
+
+We simplify the declaration again, receiving:
+int *(*D)()
+
+We find that:
+D ← *D pointer
+
+The simplified declaration is as follows:
+int *D()
+
+We know that the () operators have a higher priority than *. So:
+
+D ← D() function
+
+The next step is as follows:
+
+int *D
+
+D ← *D pointer
+
+We've reached the simplest form of the declarator now:
+
+int D
+
+int typ
+
+Let's gather all the intermediate results together:
+
+pointer, array [3], pointer, function, pointer, int
+
+We can read this chain more generally as:
+
+p is a pointer to a 3-element array of pointers to functions returning a pointer to int.
+
+---------
+
+Let's try to analyze the following declaration →
+
+ char (*(*ptr)[3])[20];
+
+Step 1:
+identifier ptr
+temporary declarator D ← *ptr
+conclusion pointer
+simplified form char (*D[3])[20];
+
+Step 2:
+temporary declarator D ← D[3]
+conclusion array[3]
+simplified form char (*D)[20];
+
+Step 3:
+temporary declarator D ← *D
+conclusion pointer
+simplified form char D[20];
+
+Step 4:
+temporary declarator D ← D[20]
+conclusion array[20]
+simplified form char D;
+
+Step 5:
+conclusion char type
+The chain of conclusions: pointer, array [3], pointer, array [20], char
+The meaning of the declaration: ptr is a pointer to an array [3] of pointers to an array [20] of char

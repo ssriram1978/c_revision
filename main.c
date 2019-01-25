@@ -8,11 +8,13 @@
 #include "datastructures/queue.h"
 #include "datastructures/binary_tree.h"
 #include "datastructures/circular_ring_buffer.h"
+#include "function_pointers.h"
+#include "file_operations.h"
+#include "preprocessors.h"
 
 int max_length = 10;
 
-int main() {
-    printf("Hello, World!\n");
+int main(int argc, char *argv[]) {
     /*
     revise_pointers();
     revise_arrays();
@@ -26,7 +28,10 @@ int main() {
     //test_struct();
     //revise_pointers();
     //revise_circular_buffer();
-    //revise_arrays();
-    revise_pointers();
+    revise_arrays();
+    //revise_pointers();
+    //revise_function_pointers(argc,argv);
+    //revise_file_operations(argc,argv);
+    //revise_preprocessors();
     return 0;
 }
