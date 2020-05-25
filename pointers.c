@@ -22,13 +22,25 @@ void pass_by_reference(char **ptr) {
     memcpy((void *)*ptr,(void *)"hello world",strlen("hello world"));
 }
 
+void manipulate_pointer_to_array(int array[]) {
+    array[0] = 11;
+    array[1] = 12;
+    array[2] = 13;
+    array[3] = 14;
+    array[4] = 15;
+}
+
 void strcat_example() {
     char *ptr = calloc(20,sizeof(char));
     char ptr2[] = " \n";
+    char *ptr3 = NULL;
     printf("*******strcat example ************.\n");
     memcpy(ptr,"Hello",strlen("Hello"));
     strcat(ptr,ptr2);
     printf("ptr=%s.",ptr);
+    if ((ptr3 = strstr(ptr, "llo")) != NULL) {
+        printf("Found %s at index %d in %s.\n",ptr3, (int) abs(ptr-ptr3), ptr);
+    }
     free(ptr);
 }
 
@@ -168,7 +180,9 @@ int main() {
 
 void revise_pointers() {
     char *ptr = NULL, *ptr1 = NULL, *ptr2 = NULL;
+    int array1[] = {1,2,3,4,5};
     char i=10;
+    int index = 0;
     printf("************Pointers************************\n");
     printf("&ptr = %p.\n",&ptr);
     printf("************Wrong way of passing unallocated pointers into a function.************************\n");
@@ -188,6 +202,16 @@ void revise_pointers() {
     free(ptr1);
     printf("********Constant pointers and pointers to constant memory examples **********\n");
     const_pointers_example();
+    printf("******** Manipulating arrays examples **********\n");
+    printf("******** Before invoking manipulate_pointer_to_array **********\n");
+    for(index=0; index < 5; index++) {
+        printf("At index %d, value = %d.\n",index, array1[index]);
+    }
+    manipulate_pointer_to_array(array1);
+    printf("******** After invoking manipulate_pointer_to_array **********\n");
+    for(index=0; index < 5; index++) {
+        printf("At index %d, value = %d.\n",index, array1[index]);
+    }
     printf("**********strcat example.**************\n");
     strcat_example();
     printf("**********strtok example.**************\n");
